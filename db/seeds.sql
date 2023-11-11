@@ -13,10 +13,10 @@ INSERT INTO role (title, salary, department_key) VALUES
     ('Sales Representative', 50000.00, 5);
 
 INSERT INTO employee (first_name, last_name, role_id) VALUES
-    ('Bob', 'Johnson', 3),
-    ('Eva', 'Davis', 4);
+    ('Bob', 'Johnson', 1),
+    ('Eva', 'Davis', 2);
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES
-    ('John', 'Doe', 1, 1),
-    ('Alice', 'Smith', 2, 1),
-    ('Mike', 'Wilson', 5, 2);
+    ('John', 'Doe', 4, 1),
+    ('Alice', 'Smith', 5, 1),
+    ('Mike', 'Wilson', 3, 2);

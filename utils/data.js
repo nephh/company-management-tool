@@ -19,7 +19,7 @@ export default async function sql(data) {
     case "View all departments":
       db.query("SELECT name, id FROM department", (err, results) => {
         const names = results.map((department) => {
-          return { Department: department.name, ID: department.id };
+          return { ID: department.id, Department: department.name};
         });
         console.table(names);
       });
