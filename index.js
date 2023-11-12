@@ -10,14 +10,21 @@ const choices = [
   { value: "Add an employee" },
   { value: "Update an employee role" },
   { value: "Update an employee's manager" },
+  { value: "View employee's by manager" },
+  { value: "View employee's by department" },
+  { value: "Remove a department, role, or employee from the database" },
+  { value: "View total budget of department (Sum of salaries)" },
+  { value: "Quit" },
 ];
 
-const answer = await select({
-  message: "Select an option",
-  choices: choices,
-});
-
 export default async function init() {
+  const answer = await select({
+    message: "Select an option",
+    choices: choices,
+  });
+
+  if (answer === "Quit") process.exit();
+
   sql(answer);
 }
 
