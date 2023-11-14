@@ -1,29 +1,36 @@
+import { select, Separator } from "@inquirer/prompts";
 import sql from "./utils/data.js";
-import { select } from "@inquirer/prompts";
+import chalk from "chalk";
 
 const choices = [
+  new Separator(chalk.grey("-- View --")),
   { value: "View all departments" },
   { value: "View all roles" },
   { value: "View all employees" },
+  { value: "View employee's by manager" },
+  { value: "View employee's by department" },
+  { value: "View total budget of department (Sum of salaries)" },
+  new Separator(chalk.grey("-- Add --")),
   { value: "Add a department" },
   { value: "Add a role" },
   { value: "Add an employee" },
+  new Separator(chalk.grey("-- Update --")),
   { value: "Update an employee role" },
   { value: "Update an employee's manager" },
-  { value: "View employee's by manager" },
-  { value: "View employee's by department" },
   { value: "Remove a department, role, or employee from the database" },
-  { value: "View total budget of department (Sum of salaries)" },
-  { value: "Quit" },
+  { name: chalk.italic.red("Quit"), value: "quit" },
 ];
 
 export default async function init() {
   const answer = await select({
-    message: "Select an option",
+    message: `${chalk.bold.blue("Welcome!")} \n  ${chalk.bold.blue(
+      "What would you like to do?"
+    )}`,
     choices: choices,
+    pageSize: choices.length,
   });
 
-  if (answer === "Quit") process.exit();
+  if (answer === "quit") process.exit();
 
   sql(answer);
 }

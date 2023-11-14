@@ -1,5 +1,6 @@
 import { select, input, confirm } from "@inquirer/prompts";
-import mysql from "mysql2";
+import init from "../index.js";
+import chalk from "chalk";
 import "console.table";
 import "dotenv/config";
 import {
@@ -7,15 +8,8 @@ import {
   getDepartments,
   getManagers,
   getRoles,
+  db,
 } from "./queries.js";
-import init from "../index.js";
-
-const db = mysql.createConnection({
-  host: "localhost",
-  user: process.env.DB_USER,
-  password: process.env.DB_PASS,
-  database: process.env.DB_NAME,
-});
 
 export default async function sql(data) {
   const allDepartments = await getDepartments();
@@ -40,7 +34,9 @@ export default async function sql(data) {
               ID: role.id,
               Role: role.title,
               Salary: role.salary,
-              Department: role.name ? role.name : "No Department found",
+              Department: role.name
+                ? role.name
+                : chalk.red("No Department found"),
             };
           });
           console.table(roles);
@@ -64,9 +60,15 @@ export default async function sql(data) {
               ID: employee.id,
               Name: `${employee.first_name} ${employee.last_name}`,
               Manager: manager,
-              Role: employee.title ? employee.title : "No role found",
-              Department: employee.name ? employee.name : "No department found",
-              Salary: employee.salary ? employee.salary : "No salary found",
+              Role: employee.title
+                ? employee.title
+                : chalk.red("No role found"),
+              Department: employee.name
+                ? employee.name
+                : chalk.red("No department found"),
+              Salary: employee.salary
+                ? employee.salary
+                : chalk.red("No salary found"),
             };
           });
           console.table(names);
@@ -76,52 +78,73 @@ export default async function sql(data) {
 
     case "Add a department":
       const newDepartment = await input({
-        message: "Enter the name of the department you would like to add.",
+        message: chalk.bold.magenta(
+          "Enter the name of the department you would like to add."
+        ),
       });
       db.query(`INSERT INTO department (name) VALUES ('${newDepartment}');`);
-      console.log(`${newDepartment} successfully added as a new department.`);
+      console.log(
+        `${chalk.bold.yellow(newDepartment)} ${chalk.bold.magenta(
+          "successfully added as a new department."
+        )}`
+      );
       break;
 
     case "Add a role":
       const newRole = {
         role: await input({
-          message: "Enter the title of the role you would like to add.",
+          message: chalk.bold.magenta(
+            "Enter the title of the role you would like to add."
+          ),
         }),
         salary: await input({
-          message: "Enter the yearly salary of the role you would like to add.",
+          message: chalk.bold.magenta(
+            "Enter the yearly salary of the role you would like to add."
+          ),
         }),
         department: await select({
-          message: "Enter the department this role belongs to.",
+          message: chalk.bold.magenta(
+            "Enter the department this role belongs to."
+          ),
           choices: allDepartments,
         }),
       };
       db.query(
         `INSERT INTO role (title, salary, department_key) VALUES ('${newRole.role}', '${newRole.salary}', '${newRole.department}');`
       );
-      console.log(`${newRole.role} successfully added as a new role.`);
+      console.log(
+        `${chalk.bold.yellow(newRole.role)} ${chalk.bold.magenta(
+          "successfully added as a new role."
+        )}`
+      );
       break;
 
     case "Add an employee":
-      allEmployees.push({ name: "None", value: 0 });
+      allEmployees.push({ name: chalk.red("None"), value: 0 });
       const newEmployee = {
         firstName: await input({
-          message: "Enter the employee's first name.",
+          message: chalk.bold.magenta("Enter the employee's first name."),
         }),
         lastName: await input({
-          message: "Enter the employee's last name.",
+          message: chalk.bold.magenta("Enter the employee's last name."),
         }),
         role: await select({
-          message: "Enter the role for this employee.",
+          message: chalk.bold.magenta("Enter the role for this employee."),
           choices: allRoles,
         }),
         manager: await select({
-          message: "Select the manager of this employee if applicable.",
+          message: chalk.bold.magenta(
+            "Select the manager of this employee if applicable."
+          ),
           choices: allEmployees,
+          pageSize: allEmployees.length,
         }),
       };
 
       console.log(
-        `${newEmployee.firstName} ${newEmployee.lastName} successfully added as a new employee.`
+        `${chalk.bold.yellow(newEmployee.firstName)} ${chalk.bold.yellow(
+          newEmployee.lastName
+        )} ${chalk.bold.magenta("successfully added as a new employee.")}`
       );
 
       if (newEmployee.manager) {
@@ -139,17 +162,21 @@ export default async function sql(data) {
     case "Update an employee role":
       const update = {
         employee: await select({
-          message: "What employee would you like to edit?",
+          message: chalk.bold.magenta("What employee would you like to edit?"),
           choices: allEmployees,
+          pageSize: allEmployees.length,
         }),
         role: await select({
-          message: "What role would you like to change the employee to?",
+          message: chalk.bold.magenta(
+            "What role would you like to change the employee to?"
+          ),
           choices: allRoles,
         }),
       };
       db.query(
         `UPDATE employee SET role_id = ${update.role} WHERE id = ${update.employee};`
       );
+      console.log(chalk.bold.yellow("Employee Role Updated"));
       break;
 
     case "Update an employee's manager":
@@ -157,21 +184,25 @@ export default async function sql(data) {
         employee: await select({
           message: "What employee would you like to edit?",
           choices: allEmployees,
+          pageSize: allEmployees.length,
         }),
         manager: await select({
           message: "What manager would you like to assign to the employee?",
           choices: allEmployees,
+          pageSize: allEmployees.length,
         }),
       };
       db.query(
         `UPDATE employee SET manager_id = ${newManager.manager} WHERE id = ${newManager.employee}`
       );
+      console.log(chalk.bold.yellow("Employee Manager Updated"));
       break;
 
     case "View employee's by manager":
       const managers = await select({
-        message: "What manager would you like to view?",
+        message: chalk.bold.magenta("What manager would you like to view?"),
         choices: allManagers,
+        pageSize: allManagers.length,
       });
       db.query(
         `SELECT first_name, last_name, employee.id, manager_id, name, title, salary FROM employee LEFT JOIN role ON employee.role_id = role.id 
@@ -193,8 +224,9 @@ export default async function sql(data) {
 
     case "View employee's by department":
       const departments = await select({
-        message: "What department would you like to view?",
+        message: chalk.bold.magenta("What department would you like to view?"),
         choices: allDepartments,
+        pageSize: allDepartments.length,
       });
 
       db.query(
@@ -220,7 +252,7 @@ export default async function sql(data) {
 
     case "Remove a department, role, or employee from the database":
       const remove = await select({
-        message: "What would you like to remove?",
+        message: chalk.bold.magenta("What would you like to remove?"),
         choices: [
           { value: "Department" },
           { value: "Role" },
@@ -231,35 +263,41 @@ export default async function sql(data) {
       switch (remove) {
         case "Department":
           const department = await select({
-            message: "What department would you like to remove?",
+            message: chalk.bold.magenta(
+              "What department would you like to remove?"
+            ),
             choices: allDepartments,
+            pageSize: allDepartments.length,
           });
 
           db.query(
             `DELETE FROM department WHERE id=${department}`,
             (err, results) => {
-              console.log("Department successfully removed!");
+              console.log(chalk.red("Department successfully removed!"));
             }
           );
           break;
         case "Role":
           const role = await select({
-            message: "What role would you like to remove?",
+            message: chalk.bold.magenta("What role would you like to remove?"),
             choices: allRoles,
+            pageSize: allRoles.length,
           });
           db.query(`DELETE FROM role WHERE id=${role}`, (err, results) => {
-            console.log("Role successfully removed!");
+            console.log(chalk.red("Role successfully removed!"));
           });
           break;
         case "Employee":
           const employee = await select({
-            message: "What employee you like to remove?",
+            message: chalk.bold.magenta("What employee you like to remove?"),
             choices: allEmployees,
+            pageSize: allEmployees.length,
           });
           db.query(
             `DELETE FROM employee WHERE id=${employee}`,
             (err, results) => {
-              console.log("Employee successfully removed!");
+              console.log(employee);
+              console.log(chalk.red("Employee successfully removed!"));
             }
           );
           break;
@@ -269,6 +307,7 @@ export default async function sql(data) {
       const department = await select({
         message: "What department would you like to see the budget of?",
         choices: allDepartments,
+        pageSize: allDepartments.length,
       });
 
       db.query(
@@ -288,7 +327,7 @@ export default async function sql(data) {
 async function exit() {
   const exits = await confirm(
     {
-      message: "Want to do anything else?",
+      message: chalk.bold.blue("Want to do anything else?"),
       default: true,
     },
     { clearPromptOnDone: true }
