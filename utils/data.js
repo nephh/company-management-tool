@@ -212,9 +212,15 @@ export default async function sql(data) {
             return {
               ID: employee.id,
               Name: `${employee.first_name} ${employee.last_name}`,
-              Role: employee.title,
-              Department: employee.name,
-              Salary: employee.salary,
+              Role: employee.title
+                ? employee.title
+                : chalk.red("No role found"),
+              Department: employee.name
+                ? employee.name
+                : chalk.red("No department found"),
+              Salary: employee.salary
+                ? employee.salary
+                : chalk.red("No salary found"),
             };
           });
           console.table(names);
