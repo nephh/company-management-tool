@@ -54,15 +54,16 @@ export default async function sql(data) {
         LEFT JOIN department ON role.department_key = department.id ORDER BY employee.id`,
         (err, results) => {
           const names = results.map((employee) => {
-            const manager_id = employee.manager_id;
-            const manager = results[manager_id - 1];
-
+            let manager = "None";
+            for (const result of results) {
+              if (result.id === employee.manager_id) {
+                manager = `${result.first_name} ${result.last_name}`;
+              }
+            }
             return {
               ID: employee.id,
               Name: `${employee.first_name} ${employee.last_name}`,
-              Manager: manager
-                ? `${manager.first_name} ${manager.last_name}`
-                : "None",
+              Manager: manager,
               Role: employee.title ? employee.title : "No role found",
               Department: employee.name ? employee.name : "No department found",
               Salary: employee.salary ? employee.salary : "No salary found",
@@ -78,6 +79,7 @@ export default async function sql(data) {
         message: "Enter the name of the department you would like to add.",
       });
       db.query(`INSERT INTO department (name) VALUES ('${newDepartment}');`);
+      console.log(`${newDepartment} successfully added as a new department.`);
       break;
 
     case "Add a role":
@@ -96,6 +98,7 @@ export default async function sql(data) {
       db.query(
         `INSERT INTO role (title, salary, department_key) VALUES ('${newRole.role}', '${newRole.salary}', '${newRole.department}');`
       );
+      console.log(`${newRole.role} successfully added as a new role.`);
       break;
 
     case "Add an employee":
@@ -116,6 +119,11 @@ export default async function sql(data) {
           choices: allEmployees,
         }),
       };
+
+      console.log(
+        `${newEmployee.firstName} ${newEmployee.lastName} successfully added as a new employee.`
+      );
+
       if (newEmployee.manager) {
         db.query(
           `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES 
@@ -155,7 +163,6 @@ export default async function sql(data) {
           choices: allEmployees,
         }),
       };
-
       db.query(
         `UPDATE employee SET manager_id = ${newManager.manager} WHERE id = ${newManager.employee}`
       );
@@ -257,6 +264,7 @@ export default async function sql(data) {
           );
           break;
       }
+      break;
     case "View total budget of department (Sum of salaries)":
       const department = await select({
         message: "What department would you like to see the budget of?",
