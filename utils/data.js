@@ -182,12 +182,14 @@ export default async function sql(data) {
     case "Update an employee's manager":
       const newManager = {
         employee: await select({
-          message: "What employee would you like to edit?",
+          message: chalk.bold.magenta("What employee would you like to edit?"),
           choices: allEmployees,
           pageSize: allEmployees.length,
         }),
         manager: await select({
-          message: "What manager would you like to assign to the employee?",
+          message: chalk.bold.magenta(
+            "What manager would you like to assign to the employee?"
+          ),
           choices: allEmployees,
           pageSize: allEmployees.length,
         }),
