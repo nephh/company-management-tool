@@ -136,8 +136,8 @@ export default async function sql(data) {
           message: chalk.bold.magenta(
             "Select the manager of this employee if applicable."
           ),
-          choices: allEmployees,
-          pageSize: allEmployees.length,
+          choices: allManagers,
+          pageSize: allManagers.length,
         }),
       };
 
@@ -190,8 +190,8 @@ export default async function sql(data) {
           message: chalk.bold.magenta(
             "What manager would you like to assign to the employee?"
           ),
-          choices: allEmployees,
-          pageSize: allEmployees.length,
+          choices: allManagers,
+          pageSize: allManagers.length,
         }),
       };
       db.query(
@@ -304,7 +304,6 @@ export default async function sql(data) {
           db.query(
             `DELETE FROM employee WHERE id=${employee}`,
             (err, results) => {
-              console.log(employee);
               console.log(chalk.red("Employee successfully removed!"));
             }
           );
