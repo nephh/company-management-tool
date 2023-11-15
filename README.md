@@ -49,7 +49,9 @@ There are a few things I would change/add to this project.
 
 2. I would then add a prompt to change an employee to a manager, this would improve the tool if the user needed to delete or change the actual managers of the company. As of right now, we rely on assuming the user knows the schema of our database.
 
-I didn't implement these changes because we were given the schema to use and I did not want to change it too much, but those were my ideas!
+3. I did however decide to add AUTO INCREMENT to the ids of each table, as this just made grabbing and making new IDs super easy. If this an actual tool in production I would add UUIDs. Simple to implement but would have muddied up the code a bit so I decided against it. Using sequelize would make this trivial.
+
+I didn't implement these changes because we were given the schema to use and I did not want to change more than I did, but those were my ideas!
 
 ## Credits
 
