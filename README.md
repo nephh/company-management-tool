@@ -15,7 +15,7 @@ A simple CLI tool utilizing mySQL to store and keep track of employee records an
 
 ## Installation
 
-1. Clone the repository containing the SVG generator app to your local machine.
+1. Clone the repository to your local machine.
 
    ```bash
    git clone <repository_url>
@@ -23,8 +23,20 @@ A simple CLI tool utilizing mySQL to store and keep track of employee records an
    ```
 
 2. Install the project's dependencies by running:
+
    ```bash
    npm install
+   ```
+
+3. Make sure you have mySQL installed on your machine, login to mySQL CLI, and create the database
+
+   ```bash
+   mysql -u 'username' -p
+   ```
+
+   ```mysql
+   source db/schema.sql
+   source db/seeds.sql
    ```
 
 ## Usage
@@ -43,9 +55,9 @@ This is a simple CLI tool that will allow you to store your employee's informati
 
 I decided to use the latest version of Inquirer which is an ES6 module, so this program uses the ES6 syntax to import the dependencies. This allows me to use inquirer prompts as async/await functions and really helps clean up the code. It is also what allowed me to easily create nested "list" prompts that use choices based off the mySQL queries, and create custom titles for the table columns. The inquirer documentation was great and overall it was a simple implementation that I think improves the readability quite a bit.
 
-There are a few things I would change/add to this project. 
+There are a few things I would change/add to this project.
 
-1. I would have implemented an "isManager" boolean on the employees, which would make getting the managers to list super easy and not dependant on having a manager_id or not. 
+1. I would have implemented an "isManager" boolean on the employees, which would make getting the managers to list super easy and not dependant on having a manager_id or not.
 
 2. I would then add a prompt to change an employee to a manager, this would improve the tool if the user needed to delete or change the actual managers of the company. As of right now, we rely on assuming the user knows the schema of our database.
 
