@@ -41,7 +41,7 @@ This is a simple CLI tool that will allow you to store your employee's informati
 
 ## A Note and Improvements
 
-I decided to use the latest version of Inquirer which is an ES6 module, so this program uses the ES6 syntax to import the dependencies. This allows me to use inquirer prompts as async/await functions and really helps clean up the code. It is also what allowed me to easily create nested "list" prompts that use choices based off the mySQL queries. The inquirer documentation was great and overall it was a simple implementation that I think improves the readability quite a bit.
+I decided to use the latest version of Inquirer which is an ES6 module, so this program uses the ES6 syntax to import the dependencies. This allows me to use inquirer prompts as async/await functions and really helps clean up the code. It is also what allowed me to easily create nested "list" prompts that use choices based off the mySQL queries, and create custom titles for the table columns. The inquirer documentation was great and overall it was a simple implementation that I think improves the readability quite a bit.
 
 There are a few things I would change/add to this project. 
 
