@@ -2,6 +2,7 @@ import { select, Separator } from "@inquirer/prompts";
 import sql from "./utils/data.js";
 import chalk from "chalk";
 
+// The main menu
 const choices = [
   new Separator(chalk.grey("-- View --")),
   { value: "View all departments" },
@@ -21,6 +22,7 @@ const choices = [
   { name: chalk.italic.red("Quit"), value: "quit" },
 ];
 
+// Initialize and handle quit
 export default async function init() {
   const answer = await select({
     message: `${chalk.bold.blue("Welcome!")} \n  ${chalk.bold.blue(

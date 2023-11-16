@@ -17,6 +17,7 @@ export default async function sql(data) {
   const allRoles = await getRoles();
   const allManagers = await getManagers();
 
+  // We pass in the users main menu answer, handle the sql queries, and display the data in a table
   switch (data) {
     case "View all departments":
       const names = allDepartments.map((department) => {
@@ -76,6 +77,7 @@ export default async function sql(data) {
       );
       break;
 
+      // We are able to nest prompts to the user for a more interactive menu
     case "Add a department":
       const newDepartment = await input({
         message: chalk.bold.magenta(
@@ -326,11 +328,13 @@ export default async function sql(data) {
       );
       break;
   }
+  // Allow the data to render to the user, and then allow the user to continue or quit
   setTimeout(() => {
     exit();
   }, 400);
 }
 
+// Handle exit or go back to main menu
 async function exit() {
   const exits = await confirm(
     {

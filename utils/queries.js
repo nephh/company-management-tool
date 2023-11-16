@@ -7,6 +7,7 @@ export const db = mysql.createConnection({
   database: process.env.DB_NAME,
 });
 
+// We use sql2 with a promise to get the data and then format it in a way that allows us to use it for inquirer prompts
 export async function getEmployees() {
   let employees;
   await db
